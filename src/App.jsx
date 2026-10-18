@@ -10,6 +10,14 @@ function App() {
   const [saved, setSaved] = useState(false)
   const [copied, setCopied] = useState(false)
   const saveTimer = useRef(null)
+  const textareaRef = useRef(null)
+
+  useEffect(() => {
+    const el = textareaRef.current
+    if (!el) return
+    el.style.height = 'auto'
+    el.style.height = el.scrollHeight + 'px'
+  }, [content, view])
 
   useEffect(() => {
     setContent(loadNote(noteId))
@@ -87,6 +95,7 @@ function App() {
         {view === 'edit' ? (
           <div className="editor-pane">
             <textarea
+              ref={textareaRef}
               value={content}
               onChange={handleChange}
               placeholder="Start writing..."
@@ -95,11 +104,13 @@ function App() {
           </div>
         ) : (
           <div className="preview-pane">
-            {content ? (
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
-            ) : (
-              <div className="empty-hint">Nothing to preview yet. Start writing!</div>
-            )}
+            <div className="preview-content">
+              {content ? (
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+              ) : (
+                <div className="empty-hint">Nothing to preview yet. Start writing!</div>
+              )}
+            </div>
           </div>
         )}
       </div>

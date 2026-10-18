@@ -105,7 +105,6 @@ body {
   flex: 1;
   display: flex;
   overflow: hidden;
-  justify-content: center;
 }
 
 .editor-pane,
@@ -113,18 +112,15 @@ body {
   flex: 1;
   overflow-y: auto;
   padding: 40px 32px;
-  display: flex;
-  justify-content: center;
-}
-
-.editor-pane {
-  max-width: 100%;
 }
 
 .editor-pane textarea {
-  flex: 1;
+  display: block;
   max-width: 720px;
   width: 100%;
+  margin: 0 auto;
+  min-height: 100%;
+  overflow: hidden;
   border: none;
   outline: none;
   resize: none;
@@ -133,17 +129,17 @@ body {
   font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
   background: transparent;
   color: #1a1a1a;
-}
-
-.preview-pane {
-  flex: 0 1 auto;
-  width: 100%;
-  max-width: 720px;
+  field-sizing: content;
 }
 
 .preview-pane {
   font-size: 15px;
   line-height: 1.7;
+}
+
+.preview-content {
+  max-width: 720px;
+  margin: 0 auto;
 }
 
 .preview-pane h1 { font-size: 28px; margin: 16px 0 12px; }
