@@ -213,7 +213,10 @@ function App() {
                   >
                     <button className="note-card-main" onClick={() => selectNote(note.id)}>
                       <span className="note-title">{note.title}</span>
-                      <span className="note-time">{formatTime(note.updatedAt)}</span>
+                      <span className="note-bottom">
+                        <span className="note-preview">{note.preview}</span>
+                        <span className="note-time">{formatTime(note.updatedAt)}</span>
+                      </span>
                     </button>
                     <button
                       className="note-delete"

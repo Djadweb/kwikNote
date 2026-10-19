@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { generateId, loadNote, saveNote, deleteNote, getHashId, listNotes, noteTitle, hasNote, ADJECTIVES, STORAGE_PREFIX } from './lib.js'
+import { generateId, loadNote, saveNote, deleteNote, getHashId, listNotes, noteTitle, notePreview, hasNote, ADJECTIVES, STORAGE_PREFIX } from './lib.js'
 
 describe('generateId', () => {
   it('produces non-empty strings', () => {
@@ -107,6 +107,20 @@ describe('noteTitle', () => {
   })
 })
 
+describe('notePreview', () => {
+  it('joins the lines after the first non-empty line', () => {
+    expect(notePreview('Title\nbody one\n\nbody two')).toBe('body one body two')
+  })
+
+  it('returns empty when there is only a title', () => {
+    expect(notePreview('Just a title')).toBe('')
+  })
+
+  it('truncates long previews', () => {
+    expect(notePreview('t\n' + 'x'.repeat(100)).length).toBeLessThanOrEqual(81)
+  })
+})
+
 describe('listNotes', () => {
   beforeEach(() => {
     localStorage.clear()
@@ -126,6 +140,17 @@ describe('listNotes', () => {
     localStorage.setItem(STORAGE_PREFIX + 'meta:Old123abc', String(old - 5000))
     saveNote('New456def', 'new')
     expect(listNotes()[0].id).toBe('New456def')
+  })
+
+  it('includes a preview of the text after the title line', () => {
+    saveNote('Prev123abc', '# Title\nfirst body line\nsecond line')
+    const note = listNotes().find((n) => n.id === 'Prev123abc')
+    expect(note.preview).toBe('first body line second line')
+  })
+
+  it('excludes notes with no content', () => {
+    saveNote('Empty123abc', '   \n  ')
+    expect(listNotes()).toHaveLength(0)
   })
 
   it('includes legacy notes without metadata', () => {

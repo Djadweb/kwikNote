@@ -59,16 +59,27 @@ export function noteTitle(text) {
   return cleaned.length > 40 ? cleaned.slice(0, 40).trimEnd() + '…' : cleaned
 }
 
+export function notePreview(text) {
+  const lines = (text || '').split('\n').map((l) => l.trim())
+  const first = lines.findIndex(Boolean)
+  if (first === -1) return ''
+  const rest = lines.slice(first + 1).filter(Boolean).join(' ')
+  return rest.length > 80 ? rest.slice(0, 80).trimEnd() + '…' : rest
+}
+
 export function listNotes() {
   const notes = []
   try {
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i)
       if (!key || !key.startsWith(STORAGE_PREFIX) || key.startsWith(META_PREFIX)) continue
+      const content = localStorage.getItem(key) || ''
+      if (!content.trim()) continue
       const id = key.slice(STORAGE_PREFIX.length)
       notes.push({
         id,
-        title: noteTitle(localStorage.getItem(key)),
+        title: noteTitle(content),
+        preview: notePreview(content),
         updatedAt: Number(localStorage.getItem(META_PREFIX + id)) || 0,
       })
     }
