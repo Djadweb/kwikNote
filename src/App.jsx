@@ -3,13 +3,29 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { generateId, loadNote, saveNote, deleteNote, getHashId, listNotes, hasNote } from './lib.js'
 
-function formatTime(ts) {
+const AVATAR_COLORS = ['#5b8def', '#4fae6e', '#e0993c', '#a06cd5', '#e06c9f', '#4aa3a3']
+
+function relativeTime(ts) {
   if (!ts) return ''
-  const date = new Date(ts)
-  const sameDay = date.toDateString() === new Date().toDateString()
-  return sameDay
-    ? date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
-    : date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+  const minutes = Math.floor((Date.now() - ts) / 60000)
+  if (minutes < 1) return 'now'
+  if (minutes < 60) return `${minutes}m`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours}h`
+  const days = Math.floor(hours / 24)
+  if (days < 7) return `${days}d`
+  return new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+}
+
+function avatarColor(id) {
+  let hash = 0
+  for (const char of id) hash = (hash * 31 + char.charCodeAt(0)) >>> 0
+  return AVATAR_COLORS[hash % AVATAR_COLORS.length]
+}
+
+function initials(title) {
+  const words = title.trim().split(/\s+/)
+  return ((words[0]?.[0] || 'N') + (words[1]?.[0] || '')).toUpperCase()
 }
 
 function App() {
@@ -20,6 +36,7 @@ function App() {
   const [copied, setCopied] = useState(false)
   const [notes, setNotes] = useState([])
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [query, setQuery] = useState('')
   const saveTimer = useRef(null)
   const textareaRef = useRef(null)
   const pendingCaret = useRef(null)
@@ -156,6 +173,10 @@ function App() {
   }
 
   const shareUrl = window.location.origin + window.location.pathname + '#' + noteId
+  const search = query.trim().toLowerCase()
+  const filteredNotes = search
+    ? notes.filter((note) => `${note.title} ${note.preview}`.toLowerCase().includes(search))
+    : notes
 
   return (
     <div className="app">
@@ -202,21 +223,39 @@ function App() {
                 ×
               </button>
             </div>
+            <div className="sidebar-search">
+              <span className="search-icon" aria-hidden="true">⌕</span>
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search notes"
+                aria-label="Search notes"
+              />
+            </div>
             <div className="sidebar-list">
-              {notes.length === 0 ? (
-                <div className="sidebar-empty">No saved notes yet.</div>
+              {filteredNotes.length === 0 ? (
+                <div className="sidebar-empty">
+                  {notes.length === 0 ? 'No saved notes yet.' : 'No notes match your search.'}
+                </div>
               ) : (
-                notes.map((note) => (
+                filteredNotes.map((note) => (
                   <div
                     key={note.id}
-                    className={'note-card' + (note.id === noteId ? ' active' : '')}
+                    className={'note-row' + (note.id === noteId ? ' active' : '')}
                   >
-                    <button className="note-card-main" onClick={() => selectNote(note.id)}>
-                      <span className="note-title">{note.title}</span>
-                      <span className="note-bottom">
-                        <span className="note-preview">{note.preview}</span>
-                        <span className="note-time">{formatTime(note.updatedAt)}</span>
+                    <button className="note-row-main" onClick={() => selectNote(note.id)}>
+                      <span className="note-row-meta">
+                        <span
+                          className="note-avatar"
+                          style={{ background: avatarColor(note.id) }}
+                          aria-hidden="true"
+                        >
+                          {initials(note.title)}
+                        </span>
+                        <span className="note-time">{relativeTime(note.updatedAt)}</span>
                       </span>
+                      <span className="note-title">{note.title}</span>
+                      {note.preview && <span className="note-preview">{note.preview}</span>}
                     </button>
                     <button
                       className="note-delete"

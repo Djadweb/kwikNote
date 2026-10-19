@@ -120,6 +120,18 @@ describe('App component', () => {
     expect(screen.getByText('Beta note')).toBeInTheDocument()
   })
 
+  it('filters notes using the search box', () => {
+    localStorage.setItem(STORAGE_PREFIX + 'Alpha123', 'Alpha note')
+    localStorage.setItem(STORAGE_PREFIX + 'Beta456', 'Beta note')
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'Toggle notes sidebar' }))
+    fireEvent.change(screen.getByRole('textbox', { name: 'Search notes' }), {
+      target: { value: 'beta' },
+    })
+    expect(screen.queryByText('Alpha note')).not.toBeInTheDocument()
+    expect(screen.getByText('Beta note')).toBeInTheDocument()
+  })
+
   it('opens a note from the sidebar', async () => {
     localStorage.setItem(STORAGE_PREFIX + 'Alpha123', 'Alpha note content')
     render(<App />)
