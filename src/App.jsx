@@ -189,9 +189,8 @@ function App() {
         </div>
       </div>
 
-      {sidebarOpen && (
-        <>
-          <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />
+      <div className="layout">
+        {sidebarOpen && (
           <aside id="notes-sidebar" className="sidebar">
             <div className="sidebar-header">
               <span>Saved notes</span>
@@ -210,9 +209,9 @@ function App() {
                 notes.map((note) => (
                   <div
                     key={note.id}
-                    className={'note-item' + (note.id === noteId ? ' active' : '')}
+                    className={'note-card' + (note.id === noteId ? ' active' : '')}
                   >
-                    <button className="note-open" onClick={() => selectNote(note.id)}>
+                    <button className="note-card-main" onClick={() => selectNote(note.id)}>
                       <span className="note-title">{note.title}</span>
                       <span className="note-time">{formatTime(note.updatedAt)}</span>
                     </button>
@@ -228,32 +227,32 @@ function App() {
               )}
             </div>
           </aside>
-        </>
-      )}
-
-      <div className="main">
-        {view === 'edit' ? (
-          <div className="editor-pane">
-            <textarea
-              ref={textareaRef}
-              value={content}
-              onChange={handleChange}
-              onKeyDown={handleKeyDown}
-              placeholder="Start writing..."
-              autoFocus
-            />
-          </div>
-        ) : (
-          <div className="preview-pane">
-            <div className="preview-content">
-              {content ? (
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
-              ) : (
-                <div className="empty-hint">Nothing to preview yet. Start writing!</div>
-              )}
-            </div>
-          </div>
         )}
+
+        <div className="main">
+          {view === 'edit' ? (
+            <div className="editor-pane">
+              <textarea
+                ref={textareaRef}
+                value={content}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown}
+                placeholder="Start writing..."
+                autoFocus
+              />
+            </div>
+          ) : (
+            <div className="preview-pane">
+              <div className="preview-content">
+                {content ? (
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{content}</ReactMarkdown>
+                ) : (
+                  <div className="empty-hint">Nothing to preview yet. Start writing!</div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="footer">

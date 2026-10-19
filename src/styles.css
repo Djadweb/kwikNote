@@ -107,26 +107,26 @@ body {
   gap: 6px;
 }
 
-.sidebar-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.25);
-  z-index: 20;
+.layout {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  .sidebar {
+    flex-basis: 220px;
+  }
 }
 
 .sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 280px;
+  flex: 0 0 280px;
   max-width: 85vw;
-  background: #fff;
+  background: #fbfbfa;
   border-right: 1px solid #e8e8e8;
-  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.08);
-  z-index: 30;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .sidebar-header {
@@ -137,6 +137,7 @@ body {
   border-bottom: 1px solid #e8e8e8;
   font-weight: 600;
   font-size: 14px;
+  flex-shrink: 0;
 }
 
 .icon-btn {
@@ -151,14 +152,17 @@ body {
 }
 
 .icon-btn:hover {
-  background: #f5f5f5;
+  background: #f0f0f0;
   color: #333;
 }
 
 .sidebar-list {
   flex: 1;
   overflow-y: auto;
-  padding: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .sidebar-empty {
@@ -168,43 +172,50 @@ body {
   padding: 12px;
 }
 
-.note-item {
+.note-card {
   display: flex;
-  align-items: center;
-  border-radius: 6px;
+  align-items: stretch;
+  background: #fff;
+  border: 1px solid #e4e4e4;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
 }
 
-.note-item:hover {
-  background: #f5f5f5;
+.note-card:hover {
+  border-color: #ccc;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
 }
 
-.note-item.active {
-  background: #e8f0fe;
+.note-card.active {
+  border-color: #4a90d9;
+  background: #f4f9fe;
 }
 
-.note-open {
+.note-card-main {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   text-align: left;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 8px 10px;
+  padding: 10px 12px;
   font: inherit;
 }
 
 .note-title {
   font-size: 13px;
+  font-weight: 500;
   color: #1a1a1a;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.note-item.active .note-title {
+.note-card.active .note-title {
   color: #2a6cb0;
   font-weight: 600;
 }
@@ -223,17 +234,18 @@ body {
   line-height: 1;
   padding: 6px 8px;
   border-radius: 4px;
+  align-self: flex-start;
 }
 
 .note-delete:hover {
   color: #d33;
-  background: #fde8e8;
 }
 
 .main {
   flex: 1;
   display: flex;
   overflow: hidden;
+  min-width: 0;
 }
 
 .editor-pane,
