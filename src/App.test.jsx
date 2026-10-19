@@ -101,4 +101,93 @@ describe('App component', () => {
     expect(screen.getByRole('button', { name: 'Preview' })).toHaveClass('active')
     expect(screen.getByRole('button', { name: 'Write' })).not.toHaveClass('active')
   })
+
+  it('opens and closes the notes sidebar', () => {
+    render(<App />)
+    expect(screen.queryByText('Saved notes')).not.toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Toggle notes sidebar' }))
+    expect(screen.getByText('Saved notes')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Close sidebar' }))
+    expect(screen.queryByText('Saved notes')).not.toBeInTheDocument()
+  })
+
+  it('lists saved notes in the sidebar', () => {
+    localStorage.setItem(STORAGE_PREFIX + 'Alpha123', 'Alpha note')
+    localStorage.setItem(STORAGE_PREFIX + 'Beta456', '# Beta note')
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'Toggle notes sidebar' }))
+    expect(screen.getByText('Alpha note')).toBeInTheDocument()
+    expect(screen.getByText('Beta note')).toBeInTheDocument()
+  })
+
+  it('opens a note from the sidebar', async () => {
+    localStorage.setItem(STORAGE_PREFIX + 'Alpha123', 'Alpha note content')
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'Toggle notes sidebar' }))
+    fireEvent.click(screen.getByText('Alpha note content'))
+    await waitFor(() => {
+      expect(window.location.hash).toBe('#Alpha123')
+      expect(screen.getByPlaceholderText('Start writing...').value).toBe('Alpha note content')
+    })
+    expect(screen.queryByText('Saved notes')).not.toBeInTheDocument()
+  })
+
+  it('does not create an empty entry when leaving an untouched blank note', () => {
+    localStorage.setItem(STORAGE_PREFIX + 'Alpha123', 'Alpha content')
+    render(<App />)
+    const blankId = window.location.hash.slice(1)
+    fireEvent.click(screen.getByRole('button', { name: 'Toggle notes sidebar' }))
+    fireEvent.click(screen.getByText('Alpha content'))
+    fireEvent.click(screen.getByRole('button', { name: 'Toggle notes sidebar' }))
+    expect(screen.queryByText('Untitled')).not.toBeInTheDocument()
+    expect(localStorage.getItem(STORAGE_PREFIX + blankId)).toBeNull()
+  })
+
+  it('deletes a note from the sidebar', async () => {
+    vi.spyOn(window, 'confirm').mockReturnValue(true)
+    localStorage.setItem(STORAGE_PREFIX + 'Alpha123', 'Alpha note content')
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'Toggle notes sidebar' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Delete Alpha note content' }))
+    await waitFor(() => {
+      expect(screen.queryByText('Alpha note content')).not.toBeInTheDocument()
+    })
+    expect(localStorage.getItem(STORAGE_PREFIX + 'Alpha123')).toBeNull()
+  })
+
+  it('continues a hyphen list on Enter', () => {
+    render(<App />)
+    const editor = screen.getByPlaceholderText('Start writing...')
+    fireEvent.change(editor, { target: { value: '- buy milk' } })
+    editor.selectionStart = editor.selectionEnd = editor.value.length
+    fireEvent.keyDown(editor, { key: 'Enter' })
+    expect(editor.value).toBe('- buy milk\n- ')
+  })
+
+  it('continues an asterisk list on Enter', () => {
+    render(<App />)
+    const editor = screen.getByPlaceholderText('Start writing...')
+    fireEvent.change(editor, { target: { value: '* task' } })
+    editor.selectionStart = editor.selectionEnd = editor.value.length
+    fireEvent.keyDown(editor, { key: 'Enter' })
+    expect(editor.value).toBe('* task\n* ')
+  })
+
+  it('increments ordered lists on Enter', () => {
+    render(<App />)
+    const editor = screen.getByPlaceholderText('Start writing...')
+    fireEvent.change(editor, { target: { value: '1. first' } })
+    editor.selectionStart = editor.selectionEnd = editor.value.length
+    fireEvent.keyDown(editor, { key: 'Enter' })
+    expect(editor.value).toBe('1. first\n2. ')
+  })
+
+  it('ends a list when Enter is pressed on an empty item', () => {
+    render(<App />)
+    const editor = screen.getByPlaceholderText('Start writing...')
+    fireEvent.change(editor, { target: { value: '- item\n- ' } })
+    editor.selectionStart = editor.selectionEnd = editor.value.length
+    fireEvent.keyDown(editor, { key: 'Enter' })
+    expect(editor.value).toBe('- item\n')
+  })
 })

@@ -5,6 +5,7 @@ export const ADJECTIVES = [
 ]
 
 export const STORAGE_PREFIX = 'kwiknote:'
+const META_PREFIX = STORAGE_PREFIX + 'meta:'
 
 export function generateId() {
   const adj = ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)]
@@ -26,6 +27,7 @@ export function loadNote(id) {
 export function saveNote(id, text) {
   try {
     localStorage.setItem(STORAGE_PREFIX + id, text)
+    localStorage.setItem(META_PREFIX + id, String(Date.now()))
     return true
   } catch {
     return false
@@ -35,7 +37,43 @@ export function saveNote(id, text) {
 export function deleteNote(id) {
   try {
     localStorage.removeItem(STORAGE_PREFIX + id)
+    localStorage.removeItem(META_PREFIX + id)
   } catch {}
+}
+
+export function hasNote(id) {
+  try {
+    return localStorage.getItem(STORAGE_PREFIX + id) !== null
+  } catch {
+    return false
+  }
+}
+
+export function noteTitle(text) {
+  const line = (text || '')
+    .split('\n')
+    .map((l) => l.trim())
+    .find(Boolean)
+  if (!line) return 'Untitled'
+  const cleaned = line.replace(/^#+\s*/, '').replace(/^[-*+]\s+/, '')
+  return cleaned.length > 40 ? cleaned.slice(0, 40).trimEnd() + '…' : cleaned
+}
+
+export function listNotes() {
+  const notes = []
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i)
+      if (!key || !key.startsWith(STORAGE_PREFIX) || key.startsWith(META_PREFIX)) continue
+      const id = key.slice(STORAGE_PREFIX.length)
+      notes.push({
+        id,
+        title: noteTitle(localStorage.getItem(key)),
+        updatedAt: Number(localStorage.getItem(META_PREFIX + id)) || 0,
+      })
+    }
+  } catch {}
+  return notes.sort((a, b) => b.updatedAt - a.updatedAt)
 }
 
 export function getHashId() {
