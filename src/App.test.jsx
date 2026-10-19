@@ -104,11 +104,12 @@ describe('App component', () => {
 
   it('opens and closes the notes sidebar', () => {
     render(<App />)
-    expect(screen.queryByText('Saved notes')).not.toBeInTheDocument()
+    const search = () => screen.queryByRole('textbox', { name: 'Search notes' })
+    expect(search()).not.toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Toggle notes sidebar' }))
-    expect(screen.getByText('Saved notes')).toBeInTheDocument()
+    expect(search()).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Close sidebar' }))
-    expect(screen.queryByText('Saved notes')).not.toBeInTheDocument()
+    expect(search()).not.toBeInTheDocument()
   })
 
   it('lists saved notes in the sidebar', () => {
@@ -141,7 +142,7 @@ describe('App component', () => {
       expect(window.location.hash).toBe('#Alpha123')
       expect(screen.getByPlaceholderText('Start writing...').value).toBe('Alpha note content')
     })
-    expect(screen.queryByText('Saved notes')).not.toBeInTheDocument()
+    expect(screen.queryByRole('textbox', { name: 'Search notes' })).not.toBeInTheDocument()
   })
 
   it('does not create an empty entry when leaving an untouched blank note', () => {

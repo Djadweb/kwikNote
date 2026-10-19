@@ -116,8 +116,8 @@ body {
 .sidebar {
   flex: 0 0 284px;
   max-width: 85vw;
-  background: #ededee;
-  border-right: 1px solid #dedede;
+  background: #f7f7f8;
+  border-right: 1px solid #e8e8ea;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -126,11 +126,8 @@ body {
 .sidebar-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 14px 16px 6px;
-  font-weight: 600;
-  font-size: 14px;
-  color: #3a3a3a;
+  justify-content: flex-end;
+  padding: 10px 12px 2px;
   flex-shrink: 0;
 }
 
@@ -237,20 +234,6 @@ body {
   align-items: center;
   gap: 8px;
   min-width: 0;
-}
-
-.note-avatar {
-  width: 18px;
-  height: 18px;
-  border-radius: 5px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
-  flex-shrink: 0;
 }
 
 .note-time {

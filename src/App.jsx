@@ -3,8 +3,6 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { generateId, loadNote, saveNote, deleteNote, getHashId, listNotes, hasNote } from './lib.js'
 
-const AVATAR_COLORS = ['#5b8def', '#4fae6e', '#e0993c', '#a06cd5', '#e06c9f', '#4aa3a3']
-
 function relativeTime(ts) {
   if (!ts) return ''
   const minutes = Math.floor((Date.now() - ts) / 60000)
@@ -15,17 +13,6 @@ function relativeTime(ts) {
   const days = Math.floor(hours / 24)
   if (days < 7) return `${days}d`
   return new Date(ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
-}
-
-function avatarColor(id) {
-  let hash = 0
-  for (const char of id) hash = (hash * 31 + char.charCodeAt(0)) >>> 0
-  return AVATAR_COLORS[hash % AVATAR_COLORS.length]
-}
-
-function initials(title) {
-  const words = title.trim().split(/\s+/)
-  return ((words[0]?.[0] || 'N') + (words[1]?.[0] || '')).toUpperCase()
 }
 
 function App() {
@@ -189,7 +176,7 @@ function App() {
             aria-expanded={sidebarOpen}
             aria-controls="notes-sidebar"
           >
-            ☰ Notes
+            ☰
           </button>
           <div className="logo">kwik<span>Note</span></div>
           <div className={'status' + (saved ? ' saved' : '')}>{saved ? 'Saved' : 'Editing...'}</div>
@@ -214,7 +201,6 @@ function App() {
         {sidebarOpen && (
           <aside id="notes-sidebar" className="sidebar">
             <div className="sidebar-header">
-              <span>Saved notes</span>
               <button
                 className="icon-btn"
                 aria-label="Close sidebar"
@@ -245,13 +231,6 @@ function App() {
                   >
                     <button className="note-row-main" onClick={() => selectNote(note.id)}>
                       <span className="note-row-meta">
-                        <span
-                          className="note-avatar"
-                          style={{ background: avatarColor(note.id) }}
-                          aria-hidden="true"
-                        >
-                          {initials(note.title)}
-                        </span>
                         <span className="note-time">{relativeTime(note.updatedAt)}</span>
                       </span>
                       <span className="note-title">{note.title}</span>
