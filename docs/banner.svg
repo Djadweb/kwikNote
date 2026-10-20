@@ -1,0 +1,87 @@
+<svg width="1280" height="420" viewBox="0 0 1280 420" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="kwikNote — a tiny, shareable Markdown notepad">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0B1524"/>
+      <stop offset="0.55" stop-color="#10233C"/>
+      <stop offset="1" stop-color="#0A1320"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1110 40) rotate(135) scale(430 430)">
+      <stop stop-color="#4A90D9" stop-opacity="0.38"/>
+      <stop offset="1" stop-color="#4A90D9" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(140 430) rotate(-45) scale(360 360)">
+      <stop stop-color="#6FB1F2" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#6FB1F2" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="mark" x1="88" y1="84" x2="152" y2="148" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6FB1F2"/>
+      <stop offset="1" stop-color="#3D7FCA"/>
+    </linearGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" stroke="#FFFFFF" stroke-opacity="0.045"/>
+    </pattern>
+    <filter id="cardShadow" x="620" y="20" width="560" height="360" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="20" stdDeviation="26" flood-color="#020814" flood-opacity="0.55"/>
+    </filter>
+    <filter id="markShadow" x="40" y="40" width="170" height="170" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="10" stdDeviation="16" flood-color="#4A90D9" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="420" fill="url(#bg)"/>
+  <rect width="1280" height="420" fill="url(#grid)"/>
+  <rect width="1280" height="420" fill="url(#glowA)"/>
+  <rect width="1280" height="420" fill="url(#glowB)"/>
+
+  <g filter="url(#markShadow)">
+    <rect x="88" y="84" width="64" height="64" rx="16" fill="url(#mark)"/>
+    <rect x="104" y="101" width="32" height="6" rx="3" fill="#FFFFFF"/>
+    <rect x="104" y="113" width="32" height="6" rx="3" fill="#FFFFFF" fill-opacity="0.85"/>
+    <rect x="104" y="125" width="22" height="6" rx="3" fill="#FFFFFF" fill-opacity="0.6"/>
+  </g>
+
+  <text x="172" y="132" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="50" font-weight="700" letter-spacing="-1.6" fill="#FFFFFF">kwik<tspan fill="#6FB1F2">Note</tspan></text>
+  <text x="90" y="192" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="23" fill="#C6D3E4">A tiny, shareable Markdown notepad.</text>
+  <text x="90" y="224" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="17" fill="#8095AD">No accounts. No database. No server. Just a URL.</text>
+
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="14" fill="#AFC1D6">
+    <rect x="90" y="258" width="106" height="34" rx="17" fill="#FFFFFF" fill-opacity="0.06" stroke="#FFFFFF" stroke-opacity="0.12"/>
+    <text x="143" y="280" text-anchor="middle">Markdown</text>
+    <rect x="206" y="258" width="110" height="34" rx="17" fill="#FFFFFF" fill-opacity="0.06" stroke="#FFFFFF" stroke-opacity="0.12"/>
+    <text x="261" y="280" text-anchor="middle">Local-first</text>
+    <rect x="326" y="258" width="94" height="34" rx="17" fill="#FFFFFF" fill-opacity="0.06" stroke="#FFFFFF" stroke-opacity="0.12"/>
+    <text x="373" y="280" text-anchor="middle">Autosave</text>
+    <rect x="430" y="258" width="124" height="34" rx="17" fill="#FFFFFF" fill-opacity="0.06" stroke="#FFFFFF" stroke-opacity="0.12"/>
+    <text x="492" y="280" text-anchor="middle">Open source</text>
+  </g>
+
+  <g filter="url(#cardShadow)">
+    <rect x="716" y="84" width="454" height="278" rx="18" fill="#FFFFFF" fill-opacity="0.05" stroke="#FFFFFF" stroke-opacity="0.08"/>
+    <rect x="690" y="66" width="454" height="278" rx="18" fill="#FBFCFE"/>
+    <path d="M690 112H1144" stroke="#E7ECF3"/>
+    <circle cx="712" cy="89" r="5" fill="#D7E0EB"/>
+    <circle cx="730" cy="89" r="5" fill="#D7E0EB"/>
+    <circle cx="748" cy="89" r="5" fill="#D7E0EB"/>
+    <text x="1120" y="93" text-anchor="end" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" fill="#9AA9BA">kwiknote.vercel.app</text>
+
+    <text x="718" y="158" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="-0.4" fill="#111827">Product launch plan</text>
+    <rect x="718" y="176" width="378" height="8" rx="4" fill="#DCE3EC"/>
+    <rect x="718" y="193" width="318" height="8" rx="4" fill="#E6EBF1"/>
+
+    <text x="718" y="232" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="16" font-weight="600" fill="#1F2937">This week</text>
+
+    <rect x="718" y="246" width="12" height="12" rx="3" fill="#4A90D9"/>
+    <path d="M721 252.5L723.5 255L727.5 249.5" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="740" y="249" width="238" height="7" rx="3.5" fill="#CFD8E3"/>
+
+    <rect x="718" y="266" width="12" height="12" rx="3" fill="#4A90D9"/>
+    <path d="M721 272.5L723.5 275L727.5 269.5" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="740" y="269" width="212" height="7" rx="3.5" fill="#CFD8E3"/>
+
+    <rect x="718" y="286" width="12" height="12" rx="3" fill="#FFFFFF" stroke="#C4CEDB"/>
+    <rect x="740" y="289" width="262" height="7" rx="3.5" fill="#DDE4EC"/>
+
+    <rect x="718" y="306" width="398" height="24" rx="6" fill="#EEF2F7"/>
+    <text x="730" y="322" font-family="'SF Mono', 'Fira Code', Consolas, monospace" font-size="11" fill="#64748B">location.hash // #Bright482kFm3q</text>
+  </g>
+</svg>

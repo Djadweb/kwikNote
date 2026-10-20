@@ -1,0 +1,37 @@
+name: Feature request
+description: Suggest an improvement for kwikNote.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        kwikNote is intentionally small and local-first. The strongest requests describe the problem before the solution.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      description: When did kwikNote fall short? What were you trying to do?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the behavior you would like, including alternatives you considered.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives and trade-offs
+      description: What could this break, and is there a smaller version that would still help?
+    validations:
+      required: false
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Project constraints
+      options:
+        - label: This feature works without a backend, accounts, or tracking.
+          required: true

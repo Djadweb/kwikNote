@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Try the live demo
+    url: https://kwiknote.vercel.app
+    about: Check whether the deployed version already shows the behavior.
+  - name: Read the contribution guide
+    url: https://github.com/Djadweb/kwikNote/blob/main/CONTRIBUTING.md
+    about: Setup, tests, and the project's design principles.

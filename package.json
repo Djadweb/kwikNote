@@ -1,17 +1,34 @@
 {
   "name": "kwiknote",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
+  "description": "A tiny, shareable Markdown notepad that lives in your browser.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "notes",
+    "markdown",
+    "notepad",
+    "local-first",
+    "offline",
+    "react",
+    "vite",
+    "productivity"
+  ],
+  "author": "Djadweb",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Djadweb/kwikNote.git"
+  },
+  "homepage": "https://kwiknote.vercel.app",
+  "bugs": {
+    "url": "https://github.com/Djadweb/kwikNote/issues"
+  },
   "type": "module",
   "dependencies": {
     "react": "^19.3.1",
