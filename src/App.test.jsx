@@ -203,4 +203,49 @@ describe('App component', () => {
     fireEvent.keyDown(editor, { key: 'Enter' })
     expect(editor.value).toBe('- item\n')
   })
+
+  it('indents a list line when Tab is pressed', () => {
+    render(<App />)
+    const editor = screen.getByPlaceholderText('Start writing...')
+    fireEvent.change(editor, { target: { value: '- line 1\n- line 2' } })
+    editor.selectionStart = editor.selectionEnd = editor.value.length
+    fireEvent.keyDown(editor, { key: 'Tab' })
+    expect(editor.value).toBe('- line 1\n  - line 2')
+  })
+
+  it('indents and completes a bare list marker when Tab is pressed', () => {
+    render(<App />)
+    const editor = screen.getByPlaceholderText('Start writing...')
+    fireEvent.change(editor, { target: { value: '- ' } })
+    editor.selectionStart = editor.selectionEnd = editor.value.length
+    fireEvent.keyDown(editor, { key: 'Tab' })
+    expect(editor.value).toBe('  - ')
+  })
+
+  it('outdents a list line when Shift+Tab is pressed', () => {
+    render(<App />)
+    const editor = screen.getByPlaceholderText('Start writing...')
+    fireEvent.change(editor, { target: { value: '  - line 2' } })
+    editor.selectionStart = editor.selectionEnd = editor.value.length
+    fireEvent.keyDown(editor, { key: 'Tab', shiftKey: true })
+    expect(editor.value).toBe('- line 2')
+  })
+
+  it('leaves non-list lines untouched when Tab is pressed', () => {
+    render(<App />)
+    const editor = screen.getByPlaceholderText('Start writing...')
+    fireEvent.change(editor, { target: { value: 'plain text' } })
+    editor.selectionStart = editor.selectionEnd = editor.value.length
+    fireEvent.keyDown(editor, { key: 'Tab' })
+    expect(editor.value).toBe('plain text')
+  })
+
+  it('continues an indented list on Enter', () => {
+    render(<App />)
+    const editor = screen.getByPlaceholderText('Start writing...')
+    fireEvent.change(editor, { target: { value: '- item\n  - sub' } })
+    editor.selectionStart = editor.selectionEnd = editor.value.length
+    fireEvent.keyDown(editor, { key: 'Enter' })
+    expect(editor.value).toBe('- item\n  - sub\n  - ')
+  })
 })

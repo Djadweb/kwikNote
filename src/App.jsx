@@ -3,6 +3,14 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { generateId, loadNote, saveNote, deleteNote, getHashId, listNotes, hasNote } from './lib.js'
 
+const INDENT = '  '
+const LIST_LINE = /^\s*([-*+]|\d+[.)])(\s|$)/
+const MARKER_ONLY = /^\s*([-*+]|\d+[.)])\s*$/
+
+function isListLine(line) {
+  return LIST_LINE.test(line)
+}
+
 function relativeTime(ts) {
   if (!ts) return ''
   const minutes = Math.floor((Date.now() - ts) / 60000)
@@ -26,7 +34,7 @@ function App() {
   const [query, setQuery] = useState('')
   const saveTimer = useRef(null)
   const textareaRef = useRef(null)
-  const pendingCaret = useRef(null)
+  const pendingSelection = useRef(null)
 
   const refreshNotes = useCallback(() => setNotes(listNotes()), [])
 
@@ -38,10 +46,12 @@ function App() {
   }, [content, view])
 
   useEffect(() => {
-    if (pendingCaret.current == null || !textareaRef.current) return
+    if (pendingSelection.current == null || !textareaRef.current) return
     const el = textareaRef.current
-    el.selectionStart = el.selectionEnd = pendingCaret.current
-    pendingCaret.current = null
+    const { start, end } = pendingSelection.current
+    el.selectionStart = start
+    el.selectionEnd = end
+    pendingSelection.current = null
   }, [content])
 
   useEffect(() => {
@@ -61,12 +71,18 @@ function App() {
     refreshNotes()
   }, [noteId, refreshNotes])
 
+  const updateContent = useCallback(
+    (text) => {
+      setContent(text)
+      setSaved(false)
+      clearTimeout(saveTimer.current)
+      saveTimer.current = setTimeout(() => persist(text), 400)
+    },
+    [persist]
+  )
+
   const handleChange = (e) => {
-    const text = e.target.value
-    setContent(text)
-    setSaved(false)
-    clearTimeout(saveTimer.current)
-    saveTimer.current = setTimeout(() => persist(text), 400)
+    updateContent(e.target.value)
   }
 
   useEffect(() => {
@@ -80,8 +96,84 @@ function App() {
 
   useEffect(() => () => clearTimeout(saveTimer.current), [])
 
+  const handleTab = (e) => {
+    const el = e.currentTarget
+    const value = el.value
+    const selStart = el.selectionStart
+    const selEnd = el.selectionEnd
+
+    const lineStart = value.lastIndexOf('\n', selStart - 1) + 1
+    let lineEnd = value.indexOf('\n', selEnd)
+    if (lineEnd === -1) lineEnd = value.length
+
+    const lines = value.slice(lineStart, lineEnd).split('\n')
+    if (!lines.every(isListLine)) return
+
+    e.preventDefault()
+
+    const outdent = e.shiftKey
+    const newLines = []
+    const shifts = []
+    for (const line of lines) {
+      if (outdent) {
+        const lead = line.match(/^[ \t]+/)
+        const removed = lead ? Math.min(lead[0].length, INDENT.length) : 0
+        newLines.push(line.slice(removed).replace(/^([-*+]|\d+[.)])[ \t]+$/, '$1'))
+        shifts.push(-removed)
+      } else {
+        const markerOnly = MARKER_ONLY.test(line)
+        newLines.push(INDENT + (markerOnly && !/\s$/.test(line) ? line + ' ' : line))
+        shifts.push(INDENT.length)
+      }
+    }
+
+    const offsets = []
+    let acc = 0
+    for (const line of lines) {
+      offsets.push(acc)
+      acc += line.length + 1
+    }
+    const newOffsets = []
+    let newAcc = 0
+    for (const line of newLines) {
+      newOffsets.push(newAcc)
+      newAcc += line.length + 1
+    }
+
+    const locate = (pos) => {
+      const p = Math.max(0, Math.min(pos, acc - 1))
+      let i = 0
+      while (i < lines.length - 1 && offsets[i + 1] <= p) i++
+      return { i, off: p - offsets[i] }
+    }
+
+    const map = ({ i, off }) => {
+      let within
+      if (outdent) {
+        within = Math.max(0, off + shifts[i])
+      } else if (MARKER_ONLY.test(lines[i])) {
+        within = newLines[i].length
+      } else {
+        within = off + shifts[i]
+      }
+      return newOffsets[i] + Math.min(within, newLines[i].length)
+    }
+
+    const next = value.slice(0, lineStart) + newLines.join('\n') + value.slice(lineEnd)
+    pendingSelection.current = {
+      start: lineStart + map(locate(selStart - lineStart)),
+      end: lineStart + map(locate(selEnd - lineStart)),
+    }
+    updateContent(next)
+  }
+
   const handleKeyDown = (e) => {
-    if (e.key !== 'Enter' || e.shiftKey || e.nativeEvent?.isComposing) return
+    if (e.nativeEvent?.isComposing) return
+    if (e.key === 'Tab') {
+      handleTab(e)
+      return
+    }
+    if (e.key !== 'Enter' || e.shiftKey) return
     const el = e.currentTarget
     if (el.selectionStart !== el.selectionEnd) return
 
@@ -109,11 +201,8 @@ function App() {
       nextCaret = caret + insert.length
     }
 
-    pendingCaret.current = nextCaret
-    setContent(next)
-    setSaved(false)
-    clearTimeout(saveTimer.current)
-    saveTimer.current = setTimeout(() => persist(next), 400)
+    pendingSelection.current = { start: nextCaret, end: nextCaret }
+    updateContent(next)
   }
 
   const newNote = () => {
