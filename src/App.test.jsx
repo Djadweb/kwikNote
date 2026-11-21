@@ -142,7 +142,7 @@ describe('App component', () => {
       expect(window.location.hash).toBe('#Alpha123')
       expect(screen.getByPlaceholderText('Start writing...').value).toBe('Alpha note content')
     })
-    expect(screen.queryByRole('textbox', { name: 'Search notes' })).not.toBeInTheDocument()
+    expect(screen.getByRole('textbox', { name: 'Search notes' })).toBeInTheDocument()
   })
 
   it('does not create an empty entry when leaving an untouched blank note', () => {

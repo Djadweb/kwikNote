@@ -215,7 +215,6 @@ function App() {
   }
 
   const selectNote = (id) => {
-    setSidebarOpen(false)
     if (id === noteId) return
     clearTimeout(saveTimer.current)
     if (content || hasNote(noteId)) {
