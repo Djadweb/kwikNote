@@ -218,7 +218,7 @@ function App() {
     if (id === noteId) return
     clearTimeout(saveTimer.current)
     if (content || hasNote(noteId)) {
-      saveNote(noteId, content)
+      saveNote(noteId, content, { touch: false })
       refreshNotes()
     }
     setNoteId(id)

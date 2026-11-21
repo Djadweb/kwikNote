@@ -145,6 +145,23 @@ describe('App component', () => {
     expect(screen.getByRole('textbox', { name: 'Search notes' })).toBeInTheDocument()
   })
 
+  it('keeps note ranks stable when switching notes from the sidebar', async () => {
+    localStorage.setItem(STORAGE_PREFIX + 'Old123abcde', 'Old note')
+    localStorage.setItem(STORAGE_PREFIX + 'meta:Old123abcde', '1000')
+    localStorage.setItem(STORAGE_PREFIX + 'New456fghij', 'New note')
+    localStorage.setItem(STORAGE_PREFIX + 'meta:New456fghij', '2000')
+    window.location.hash = '#Old123abcde'
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'Toggle notes sidebar' }))
+    const titles = () => Array.from(document.querySelectorAll('.note-title')).map((el) => el.textContent)
+    expect(titles()).toEqual(['New note', 'Old note'])
+    fireEvent.click(screen.getByText('New note'))
+    await waitFor(() => {
+      expect(window.location.hash).toBe('#New456fghij')
+    })
+    expect(titles()).toEqual(['New note', 'Old note'])
+  })
+
   it('does not create an empty entry when leaving an untouched blank note', () => {
     localStorage.setItem(STORAGE_PREFIX + 'Alpha123', 'Alpha content')
     render(<App />)

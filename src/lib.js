@@ -24,10 +24,12 @@ export function loadNote(id) {
   }
 }
 
-export function saveNote(id, text) {
+export function saveNote(id, text, { touch = true } = {}) {
   try {
     localStorage.setItem(STORAGE_PREFIX + id, text)
-    localStorage.setItem(META_PREFIX + id, String(Date.now()))
+    if (touch || localStorage.getItem(META_PREFIX + id) === null) {
+      localStorage.setItem(META_PREFIX + id, String(Date.now()))
+    }
     return true
   } catch {
     return false

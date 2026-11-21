@@ -77,6 +77,19 @@ describe('storage', () => {
     expect(loadNote('Empty999abc')).toBe('')
   })
 
+  it('saves content without changing the rank timestamp when touch is false', () => {
+    saveNote('One123abc', 'first')
+    localStorage.setItem(STORAGE_PREFIX + 'meta:One123abc', '1000')
+    saveNote('One123abc', 'second', { touch: false })
+    expect(loadNote('One123abc')).toBe('second')
+    expect(localStorage.getItem(STORAGE_PREFIX + 'meta:One123abc')).toBe('1000')
+  })
+
+  it('assigns a rank timestamp to a new note even when touch is false', () => {
+    saveNote('New123abc', 'fresh', { touch: false })
+    expect(Number(localStorage.getItem(STORAGE_PREFIX + 'meta:New123abc'))).toBeGreaterThan(0)
+  })
+
   it('reports whether a note exists', () => {
     expect(hasNote('Nope123abc')).toBe(false)
     saveNote('Yes123abcd', 'hi')
