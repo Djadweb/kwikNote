@@ -162,6 +162,25 @@ describe('App component', () => {
     expect(titles()).toEqual(['New note', 'Old note'])
   })
 
+  it('keeps note ranks stable when editing an old note', async () => {
+    localStorage.setItem(STORAGE_PREFIX + 'Old123abcde', 'Old note')
+    localStorage.setItem(STORAGE_PREFIX + 'meta:Old123abcde', '1000')
+    localStorage.setItem(STORAGE_PREFIX + 'New456fghij', 'New note')
+    localStorage.setItem(STORAGE_PREFIX + 'meta:New456fghij', '2000')
+    window.location.hash = '#Old123abcde'
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'Toggle notes sidebar' }))
+    const titles = () => Array.from(document.querySelectorAll('.note-title')).map((el) => el.textContent)
+    expect(titles()).toEqual(['New note', 'Old note'])
+    fireEvent.change(screen.getByPlaceholderText('Start writing...'), { target: { value: 'Old note edited' } })
+    await act(() => {
+      return new Promise((r) => setTimeout(r, 500))
+    })
+    expect(localStorage.getItem(STORAGE_PREFIX + 'Old123abcde')).toBe('Old note edited')
+    expect(localStorage.getItem(STORAGE_PREFIX + 'meta:Old123abcde')).toBe('1000')
+    expect(titles()).toEqual(['New note', 'Old note edited'])
+  })
+
   it('does not create an empty entry when leaving an untouched blank note', () => {
     localStorage.setItem(STORAGE_PREFIX + 'Alpha123', 'Alpha content')
     render(<App />)

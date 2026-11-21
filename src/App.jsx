@@ -66,7 +66,7 @@ function App() {
   }, [refreshNotes])
 
   const persist = useCallback((text) => {
-    const ok = saveNote(noteId, text)
+    const ok = saveNote(noteId, text, { touch: false })
     setSaved(ok)
     refreshNotes()
   }, [noteId, refreshNotes])
